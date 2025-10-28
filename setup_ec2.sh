@@ -1,10 +1,11 @@
 #!/bin/bash
 # Configuration
-KEY_NAME="cctb"  # Replace with your EC2 key pair name
+KEY_NAME="cctb"
 SECURITY_GROUP_NAME="assignment6-sg"
 WEB_INSTANCE_NAME="WebServer-EC2"
 MONGO_INSTANCE_NAME="MongoDB-EC2"
-AMI_ID="ami-0c55b159cbfafe1f0"  # Amazon Linux 2 AMI (us-east-1)
+# Use a known working Amazon Linux 2023 AMI for us-east-1
+AMI_ID="ami-0fc5d935ebf8bc3bc"
 INSTANCE_TYPE="t3.medium"
 
 # Create Security Group
@@ -49,3 +50,8 @@ MONGO_PUBLIC_IP=$(aws ec2 describe-instances --instance-ids $MONGO_INSTANCE_ID -
 
 echo "WebServer Public IP: $WEB_PUBLIC_IP"
 echo "MongoDB Public IP: $MONGO_PUBLIC_IP"
+echo ""
+echo "Setup completed! Next steps:"
+echo "1. Run install_mongodb.sh on MongoDB instance: $MONGO_PUBLIC_IP"
+echo "2. Run install_webserver.sh on WebServer instance: $WEB_PUBLIC_IP"
+echo "3. Update MONGO_URI in settings.py with MongoDB IP: $MONGO_PUBLIC_IP"

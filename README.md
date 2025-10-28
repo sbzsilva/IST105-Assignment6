@@ -8,6 +8,7 @@ This project involves creating a Django web application that processes number in
 ├── setup_ec2.sh                 # Script to create EC2 instances on AWS
 ├── install_webserver.sh         # Script to install software on WebServer EC2
 ├── install_mongodb.sh           # Script to install MongoDB on MongoDB EC2
+├── requirements.txt             # Python dependencies
 ├── assignment6/                 # Django project
 │   ├── settings.py             # Django settings with MongoDB configuration
 │   └── urls.py                 # Main URL configuration
@@ -40,29 +41,25 @@ Note the public IPs for both instances.
 
 #### On WebServer-EC2:
 ```bash
-ssh -i your-key-pair.pem ec2-user@<WebServer-Public-IP>
+ssh -i cctb.pem ec2-user@<WebServer-Public-IP>
 chmod +x install_webserver.sh
 ./install_webserver.sh
+cd IST105-Assignment6
+# Update settings.py with MongoDB IP
+sed -i "s/<MongoDB-EC2-Public-IP>/$MONGO_PUBLIC_IP/g" assignment6/settings.py
+source ~/venv/bin/activate
+python manage.py migrate
+python manage.py runserver 0.0.0.0:8000
 ```
 
 #### On MongoDB-EC2:
 ```bash
-ssh -i your-key-pair.pem ec2-user@<MongoDB-Public-IP>
+ssh -i cctb.pem ec2-user@<MongoDB-Public-IP>
 chmod +x install_mongodb.sh
 ./install_mongodb.sh
 ```
 
-### 3. Django Project Setup
-
-On WebServer-EC2:
-```bash
-cd ~/assignment6
-source venv/bin/activate
-django-admin startproject assignment6 .
-python manage.py startapp bitwise
-```
-
-### 4. Configuration
+### 3. Configuration
 
 1. Update `assignment6/settings.py`:
    - Add 'bitwise' to INSTALLED_APPS
@@ -70,7 +67,7 @@ python manage.py startapp bitwise
 
 2. Create all Django application files as specified.
 
-### 5. Running the Application
+### 4. Running the Application
 
 ```bash
 python manage.py migrate
@@ -79,7 +76,7 @@ python manage.py runserver 0.0.0.0:8000
 
 Access the application at `http://<WebServer-Public-IP>:8000`
 
-### 6. GitHub Repository Setup
+### 5. GitHub Repository Setup
 
 ```bash
 cd ~/assignment6
