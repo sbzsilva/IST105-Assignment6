@@ -1,13 +1,23 @@
-# IST105 Assignment 6
+# Number Processing Application with Bitwise Operations
 
-This project involves creating a Django web application that processes number inputs using bitwise operations and stores the results in a MongoDB database, all deployed on AWS EC2 instances.
+This is a Django web application that processes numerical inputs using various mathematical and bitwise operations, storing the results in a MongoDB database. The application provides a simple web interface for entering numbers and viewing processed results.
+
+## Application Overview
+
+The application takes five numerical inputs from the user and performs the following operations:
+- Identifies negative values in the input
+- Calculates the average of all numbers
+- Determines if the average is above 50
+- Counts positive numbers and checks if the count is even or odd using bitwise operations
+- Filters values greater than 10 and sorts them
+- Stores all results in a MongoDB database
 
 ## Project Structure
 
 ```
 ├── setup_ec2.sh                 # Script to create EC2 instances on AWS
-├── install_webserver.sh         # Script to install software on WebServer EC2
-├── install_mongodb.sh           # Script to install MongoDB on MongoDB EC2
+├── install_webserver.sh         # Script to install software on WebServer
+├── install_mongodb.sh           # Script to install MongoDB
 ├── requirements.txt             # Python dependencies
 ├── assignment6/                 # Django project
 │   ├── settings.py             # Django settings with MongoDB configuration
@@ -22,95 +32,82 @@ This project involves creating a Django web application that processes number in
 └── README.md                   # This file
 ```
 
-## Setup Instructions
+## Core Components
 
-### 1. AWS EC2 Setup
+### Frontend Interface
+A clean, responsive web interface built with HTML and CSS that allows users to:
+- Input five numerical values
+- Submit the values for processing
+- View the results of various calculations
+- See warnings for negative values
 
+### Backend Processing
+The Django backend performs several operations on the input data:
+- **Negative Value Detection**: Checks if any input values are negative
+- **Average Calculation**: Computes the mean of all input values
+- **Threshold Comparison**: Determines if the average is greater than 50
+- **Bitwise Even/Odd Check**: Uses bitwise operations to determine if the count of positive numbers is even or odd
+- **Filtering and Sorting**: Filters values greater than 10 and sorts them in ascending order
+
+### Database Storage
+Processed results are stored in a MongoDB database with the following structure:
+```json
+{
+  "input": [/* Original input values */],
+  "result": {
+    "original": [/* Copy of input values */],
+    "filtered": [/* Values > 10, sorted */],
+    "average": /* Calculated average */,
+    "avg_above_50": /* Boolean */,
+    "positive_count": /* Count of positive numbers */,
+    "is_even": /* Boolean result of bitwise check */,
+    "has_negative": /* Boolean */
+  }
+}
+```
+
+## Installation and Deployment
+
+### Prerequisites
+- AWS Account with CLI access configured
+- SSH key pair for EC2 instances
+
+### Automated Deployment
 1. Run the `setup_ec2.sh` script to create two EC2 instances:
-   - WebServer-EC2 for the Django application
-   - MongoDB-EC2 for the database
+   - One for the Django web application
+   - One for the MongoDB database
 
-```bash
-chmod +x setup_ec2.sh
-./setup_ec2.sh
+2. Install software on each instance:
+   - Execute `install_webserver.sh` on the web server instance
+   - Execute `install_mongodb.sh` on the database instance
+
+3. Update the MongoDB connection string in [assignment6/settings.py](file:///c:/Users/ssilva/college/IST105-Assignment6/assignment6/settings.py) with the database instance's IP address
+
+4. Run the Django application:
+   ```bash
+   python manage.py migrate
+   python manage.py runserver 0.0.0.0:8000
+   ```
+
+## Technical Details
+
+### Bitwise Operation Implementation
+The application uses a bitwise AND operation to efficiently determine if the count of positive numbers is even or odd:
+```python
+is_even = (positive_count & 1) == 0
 ```
 
-Note the public IPs for both instances.
+This approach is more efficient than using modulo operation and demonstrates low-level bit manipulation.
 
-### 2. Software Installation
+### Data Flow
+1. User submits five numbers through the web form
+2. Server-side validation ensures all inputs are valid floats
+3. Calculations are performed on the input data
+4. Results are formatted and stored in MongoDB
+5. Results are displayed to the user through the web interface
 
-#### On WebServer-EC2:
-```bash
-ssh -i cctb.pem ec2-user@<WebServer-Public-IP>
-chmod +x install_webserver.sh
-./install_webserver.sh
-cd IST105-Assignment6
-# Update settings.py with MongoDB IP
-sed -i "s/<MongoDB-EC2-Public-IP>/$MONGO_PUBLIC_IP/g" assignment6/settings.py
-source ~/venv/bin/activate
-python manage.py migrate
-python manage.py runserver 0.0.0.0:8000
-```
-
-#### On MongoDB-EC2:
-```bash
-ssh -i cctb.pem ec2-user@<MongoDB-Public-IP>
-chmod +x install_mongodb.sh
-./install_mongodb.sh
-```
-
-### 3. Configuration
-
-1. Update `assignment6/settings.py`:
-   - Add 'bitwise' to INSTALLED_APPS
-   - Configure MongoDB connection with the MongoDB EC2 public IP
-
-2. Create all Django application files as specified.
-
-### 4. Running the Application
-
-```bash
-python manage.py migrate
-python manage.py runserver 0.0.0.0:8000
-```
-
-Access the application at `http://<WebServer-Public-IP>:8000`
-
-### 5. GitHub Repository Setup
-
-```bash
-cd ~/assignment6
-git init
-git add .
-git commit -m "Initial commit"
-git branch development
-git branch feature1
-git checkout main
-git remote add origin https://github.com/your-username/IST105-Assignment6.git
-git push -u origin main
-git push origin development
-git push origin feature1
-```
-
-## Verification
-
-### On MongoDB-EC2:
-```bash
-# Check MongoDB service
-sudo systemctl status mongod
-
-# Verify data insertion
-mongo
-use assignment6_db
-db.results.find().pretty()
-```
-
-## Submission Requirements
-
-Create a Word document `Assignment6_YourName.docx` containing:
-1. GitHub Repository URL
-2. Screenshots:
-   - Application running in browser with input and output
-   - MongoDB service running on EC2
-   - MongoDB terminal with inserted data
-   - Security group rules for both EC2 instances
+## Dependencies
+- Python 3.x
+- Django 3.2+
+- PyMongo 3.12+
+- MongoDB 4.4
