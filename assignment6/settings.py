@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-abcdefghijklmnopqrstuvwxyz1234567890'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['98.93.122.226', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -126,5 +126,5 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # MongoDB Configuration
-MONGO_URI = 'mongodb://<MongoDB-EC2-Public-IP>:27017/'
+MONGO_URI = 'mongodb://44.220.180.30:27017/'
 MONGO_DB = 'assignment6_db'
