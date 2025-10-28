@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assignment 6 - Data Processing</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input[type="text"] { width: 100%; padding: 8px; }
+        button { background-color: #4CAF50; color: white; padding: 10px 15px; border: none; cursor: pointer; }
+        .result { margin-top: 30px; padding: 15px; background-color: #f0f0f0; border-radius: 5px; }
+        .error { color: red; margin-top: 10px; }
+        .warning { color: orange; }
+    </style>
+</head>
+<body>
+    <h1>Number Processing Application</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.a.label_tag }} {{ form.a }}
+        </div>
+        <div class="form-group">
+            {{ form.b.label_tag }} {{ form.b }}
+        </div>
+        <div class="form-group">
+            {{ form.c.label_tag }} {{ form.c }}
+        </div>
+        <div class="form-group">
+            {{ form.d.label_tag }} {{ form.d }}
+        </div>
+        <div class="form-group">
+            {{ form.e.label_tag }} {{ form.e }}
+        </div>
+        <button type="submit">Process Numbers</button>
+    </form>
+    
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+    
+    {% if result %}
+        <div class="result">
+            <h2>Processing Results:</h2>
+            <p><strong>Original Values:</strong> {{ result.original }}</p>
+            <p><strong>Filtered Values (>10):</strong> {{ result.filtered }}</p>
+            <p><strong>Average:</strong> {{ result.average }}</p>
+            <p><strong>Average > 50:</strong> {{ result.avg_above_50|yesno:"Yes,No" }}</p>
+            <p><strong>Count of Positive Numbers:</strong> {{ result.positive_count }}</p>
+            <p><strong>Positive Count is Even:</strong> {{ result.is_even|yesno:"Yes,No" }}</p>
+            {% if result.has_negative %}
+                <p class="warning"><strong>Warning:</strong> Some values are negative!</p>
+            {% endif %}
+        </div>
+    {% endif %}
+</body>
+</html>
