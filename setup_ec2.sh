@@ -1,11 +1,11 @@
 #!/bin/bash
 # Configuration
-KEY_NAME="your-key-pair"  # Replace with your EC2 key pair name
+KEY_NAME="cctb"  # Replace with your EC2 key pair name
 SECURITY_GROUP_NAME="assignment6-sg"
 WEB_INSTANCE_NAME="WebServer-EC2"
 MONGO_INSTANCE_NAME="MongoDB-EC2"
 AMI_ID="ami-0c55b159cbfafe1f0"  # Amazon Linux 2 AMI (us-east-1)
-INSTANCE_TYPE="t2.micro"
+INSTANCE_TYPE="t3.medium"
 
 # Create Security Group
 SG_ID=$(aws ec2 create-security-group --group-name $SECURITY_GROUP_NAME --description "Assignment6 Security Group" --output text --query 'GroupId')
